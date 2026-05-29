@@ -11,9 +11,13 @@ export function Bird() {
 
   useEffect(() => {
     const action = actions["Take 001"];
-    if (action) action.play();
-    return () => { if (action) action.stop(); };
-  }, [actions]);
+    if (action) {
+      action.reset().play();
+    }
+    // Empty deps: actions object reference is stable after GLTF resolves inside Suspense.
+    // Adding [actions] would restart the animation on every render (actions is not memoised).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useFrame(({ clock, camera }) => {
     birdRef.current.position.y = Math.sin(clock.elapsedTime) * 0.2 + 2;

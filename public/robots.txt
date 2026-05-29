@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://my-portfolio-ten-murex-87.vercel.app/sitemap.xml

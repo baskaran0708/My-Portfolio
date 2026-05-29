@@ -11,11 +11,7 @@ const FloatingNavbar = ({ navItems = [], className = "" }) => {
   useMotionValueEvent(scrollYProgress, "change", (current) => {
     if (typeof current === "number") {
       const direction = current - scrollYProgress.getPrevious();
-      if (scrollYProgress.get() < 0.05) {
-        setVisible(true);
-      } else {
-        setVisible(direction < 0);
-      }
+      setVisible(scrollYProgress.get() < 0.05 || direction < 0);
     }
   });
 
@@ -32,8 +28,8 @@ const FloatingNavbar = ({ navItems = [], className = "" }) => {
           ${className}`}
         style={{
           backdropFilter: "blur(16px) saturate(180%)",
-          backgroundColor: "rgba(17, 25, 40, 0.85)",
-          border: "1px solid rgba(255, 255, 255, 0.125)",
+          backgroundColor: "rgba(17,25,40,0.85)",
+          border: "1px solid rgba(255,255,255,0.125)",
           boxShadow: "0 2px 12px rgba(0,0,0,0.3)",
         }}
       >
@@ -50,22 +46,33 @@ const FloatingNavbar = ({ navItems = [], className = "" }) => {
 
         <span className="text-white/20 text-sm">|</span>
 
-        {navItems.map((item, idx) => (
-          <a
-            key={idx}
-            href={item.link}
-            className="text-neutral-300 hover:text-white font-medium cursor-pointer transition-colors whitespace-nowrap
-                       text-[10px] sm:text-xs lg:text-sm"
-          >
-            {/* Abbreviate on tiny screens */}
-            <span className="sm:hidden">
-              {item.name === "Experience" ? "Exp" :
-               item.name === "Projects"   ? "Work" :
-               item.name}
-            </span>
-            <span className="hidden sm:inline">{item.name}</span>
-          </a>
-        ))}
+        {navItems.map((item, idx) => {
+          const isRoute = item.link.startsWith("/");
+          const sharedCls =
+            "text-neutral-300 hover:text-white font-medium cursor-pointer transition-colors whitespace-nowrap text-[10px] sm:text-xs lg:text-sm";
+          const label = (
+            <>
+              <span className="sm:hidden">
+                {item.name === "Experience" ? "Exp" :
+                 item.name === "Projects"   ? "Work" :
+                 item.name}
+              </span>
+              <span className="hidden sm:inline">{item.name}</span>
+            </>
+          );
+
+          // Route links: use navigate() so React Router handles them as SPA transitions
+          // Hash links: use plain <a> so the browser scrolls to the anchor
+          return isRoute ? (
+            <button key={idx} onClick={() => navigate(item.link)} className={sharedCls}>
+              {label}
+            </button>
+          ) : (
+            <a key={idx} href={item.link} className={sharedCls}>
+              {label}
+            </a>
+          );
+        })}
       </motion.nav>
     </AnimatePresence>
   );

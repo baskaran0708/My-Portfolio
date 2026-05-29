@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#000319"/>
+      <stop offset="100%" style="stop-color:#0D0D2B"/>
+    </linearGradient>
+    <linearGradient id="name" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#CBACF9"/>
+      <stop offset="100%" style="stop-color:#0072ff"/>
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <!-- Glow -->
+  <circle cx="200" cy="200" r="300" fill="#7c3aed" opacity="0.07"/>
+  <circle cx="1000" cy="430" r="250" fill="#0072ff" opacity="0.05"/>
+  <!-- Name -->
+  <text x="80" y="260" font-family="Arial Black, sans-serif" font-size="96" font-weight="900" fill="url(#name)">Baskaran A</text>
+  <!-- Role -->
+  <text x="80" y="340" font-family="Arial, sans-serif" font-size="36" fill="#BEC1DD">Backend Software Engineer &amp; AI/ML Engineer</text>
+  <!-- Stack pills -->
+  <text x="80" y="420" font-family="Arial, sans-serif" font-size="24" fill="#8892A4">C++ · PACS/DICOM · Kafka · gRPC · PyTorch · ONNX · React · AWS</text>
+  <!-- URL -->
+  <text x="80" y="570" font-family="Arial, sans-serif" font-size="22" fill="#4A5568">my-portfolio-ten-murex-87.vercel.app</text>
+  <!-- Divider -->
+  <line x1="80" y1="460" x2="1120" y2="460" stroke="#1E2A4A" stroke-width="1"/>
+  <!-- Location -->
+  <text x="80" y="510" font-family="Arial, sans-serif" font-size="22" fill="#6B7280">📍 Chennai, India · Open to Senior Engineering Roles</text>
+</svg>

@@ -1,17 +1,29 @@
 import { Component } from "react";
 
+/**
+ * Wraps children and catches any React render errors.
+ * Pass location.key (or any string that changes on route change) as the `resetKey`
+ * prop so the boundary auto-resets when the user navigates to a healthy route.
+ */
 class ErrorBoundary extends Component {
   constructor(props) {
     super(props);
-    this.state = { hasError: false, error: null };
+    this.state = { hasError: false };
   }
 
-  static getDerivedStateFromError(error) {
-    return { hasError: true, error };
+  static getDerivedStateFromError() {
+    return { hasError: true };
   }
 
   componentDidCatch(error, info) {
-    console.error("[ErrorBoundary]", error, info.componentStack);
+    console.error("[ErrorBoundary] Render error:", error, info.componentStack);
+  }
+
+  // Reset when the parent passes a new resetKey (e.g. location changes)
+  componentDidUpdate(prevProps) {
+    if (this.state.hasError && prevProps.resetKey !== this.props.resetKey) {
+      this.setState({ hasError: false });
+    }
   }
 
   render() {
@@ -22,7 +34,8 @@ class ErrorBoundary extends Component {
             <p className="text-5xl mb-4">⚠️</p>
             <h2 className="text-2xl font-bold text-slate-800 mb-2">Something went wrong</h2>
             <p className="text-slate-500 text-sm mb-6">
-              A rendering error occurred. This is usually caused by a WebGL / 3D model issue.
+              A rendering error occurred — usually a WebGL or 3D model issue.
+              Navigate to another page or reload.
             </p>
             <button
               onClick={() => window.location.reload()}

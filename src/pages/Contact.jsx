@@ -69,13 +69,23 @@ const Contact = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Guard: catch missing Vercel environment variables early
+    const svcId  = import.meta.env.VITE_APP_EMAILJS_SERVICE_ID;
+    const tplId  = import.meta.env.VITE_APP_EMAILJS_TEMPLATE_ID;
+    const pubKey = import.meta.env.VITE_APP_EMAILJS_PUBLIC_KEY;
+    if (!svcId || !tplId || !pubKey) {
+      showAlert({ show: true, text: "Email service not configured — please contact me directly.", type: "danger" });
+      return;
+    }
+
     setLoading(true);
     setCurrentAnimation("hit");
 
     emailjs
       .send(
-        import.meta.env.VITE_APP_EMAILJS_SERVICE_ID,
-        import.meta.env.VITE_APP_EMAILJS_TEMPLATE_ID,
+        svcId,
+        tplId,
         {
           from_name:  form.name,
           to_name:    "Baskaran",
@@ -83,7 +93,7 @@ const Contact = () => {
           to_email:   "baskaran030708@gmail.com",
           message:    form.message,
         },
-        import.meta.env.VITE_APP_EMAILJS_PUBLIC_KEY
+        pubKey
       )
       .then(() => {
         setLoading(false);
@@ -271,7 +281,8 @@ const Contact = () => {
           {/* Fox 3D canvas */}
           <div
             className="w-full rounded-2xl overflow-hidden border border-slate-100 shadow-sm"
-            style={{ height: "280px", background: "linear-gradient(135deg,#f8faff,#eef2ff)" }}
+            className="h-[200px] sm:h-[260px] lg:h-[280px]"
+            style={{ background: "linear-gradient(135deg,#f8faff,#eef2ff)" }}
           >
             <Canvas camera={{ position: [0, 0, 5], fov: 75, near: 0.1, far: 1000 }}>
               <directionalLight position={[0, 0, 1]} intensity={2.5} />
