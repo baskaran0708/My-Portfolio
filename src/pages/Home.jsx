@@ -20,18 +20,18 @@ const adjustIslandForScreenSize = () =>
 const [biplaneScale, biplanePosition] = adjustBiplaneForScreenSize();
 const [islandScale,  islandPosition]  = adjustIslandForScreenSize();
 
-/* ── Particle emoji pools ── */
-const LOVE_EMOJIS = ["❤️","💕","💖","💗","💓","💞","🌸","✨"];
-const TECH_EMOJIS = ["💻","🚀","⚡","🔥","🛠️","🤖","🧠","🎯"];
-const ALL_EMOJIS  = [...LOVE_EMOJIS, ...TECH_EMOJIS];
-let   _pid = 0;
+/* ── Particle emoji pools — alternates heart / fire per click ── */
+const HEART_EMOJIS = ["❤️","💕","💖","💗","💓","💞","🌸","💝"];
+const FIRE_EMOJIS  = ["🔥","✨","⚡","💥","🚀","🌟","💫","🎯"];
+let   _clickCount  = 0;
+let   _pid = 0; // particle ID counter
 
 /* ── Hint shown on first load ── */
 const ClickHint = () => (
   <div className="bird-hint absolute top-24 right-6 sm:right-16 pointer-events-none
                   bg-black/60 text-white text-xs px-3 py-1.5 rounded-full backdrop-blur-sm
                   flex items-center gap-1.5 z-20">
-    <span>🐦</span> Click the bird!
+    <span>🐦</span> Click the bird for ❤️ &amp; 🔥
   </div>
 );
 
@@ -90,32 +90,32 @@ const Home = () => {
     }
   }, [isPlayingMusic]);
 
-  /* Bird click → particle burst */
+  /* Bird click → particle burst — alternates hearts ❤️ and fire 🔥 */
   const handleBirdClick = useCallback(({ clientX, clientY }) => {
     setShowHint(false);
-    hintShownRef.current = true;
 
-    // Pick 8 random emojis, fan them out in random directions
-    const burst = Array.from({ length: 8 }, (_, i) => {
-      const angle = (i / 8) * Math.PI * 2 + (Math.random() - 0.5) * 0.8;
-      const dist  = 60 + Math.random() * 80;
+    _clickCount++;
+    const pool = _clickCount % 2 === 0 ? FIRE_EMOJIS : HEART_EMOJIS;
+
+    const COUNT = 10;
+    const burst = Array.from({ length: COUNT }, (_, i) => {
+      const angle = (i / COUNT) * Math.PI * 2 + (Math.random() - 0.5) * 0.6;
+      const dist  = 55 + Math.random() * 90;
       return {
         id:    pidRef.current++,
-        emoji: ALL_EMOJIS[Math.floor(Math.random() * ALL_EMOJIS.length)],
+        emoji: pool[Math.floor(Math.random() * pool.length)],
         x:     clientX,
         y:     clientY,
         dx:    Math.cos(angle) * dist,
-        dy:    Math.sin(angle) * dist - 40, // bias upward
+        dy:    Math.sin(angle) * dist - 50, // bias upward
       };
     });
 
-    setParticles(prev => [...prev.slice(-32), ...burst]);
-
-    // Cleanup this batch after animation finishes (1.4 s + buffer)
+    setParticles(prev => [...prev.slice(-40), ...burst]);
     const ids = new Set(burst.map(p => p.id));
     setTimeout(() => {
       setParticles(prev => prev.filter(p => !ids.has(p.id)));
-    }, 1800);
+    }, 1900);
   }, []);
 
   return (
