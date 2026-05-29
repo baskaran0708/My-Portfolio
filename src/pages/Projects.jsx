@@ -343,7 +343,7 @@ const ProjectCard = ({ project, idx }) => (
 /* ── Hero ─────────────────────────────────────────────────────────────── */
 const Hero = () => {
   return (
-    <section className="relative min-h-[100svh] flex flex-col justify-center pt-20 sm:pt-28 pb-10 sm:pb-16 overflow-hidden w-full">
+    <section className="relative lg:min-h-[100svh] flex flex-col lg:justify-center pt-16 sm:pt-20 lg:pt-28 pb-8 sm:pb-12 lg:pb-16 overflow-hidden w-full">
       {/* Background */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute inset-0" style={{ backgroundImage: "radial-gradient(rgba(255,255,255,0.02) 1px, transparent 1px)", backgroundSize: "32px 32px" }} />

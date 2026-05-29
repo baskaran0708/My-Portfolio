@@ -3,8 +3,6 @@ import { Route, BrowserRouter as Router, Routes, useLocation } from "react-route
 
 import { Footer, Navbar } from "./components";
 import ErrorBoundary from "./components/ErrorBoundary";
-import Loader from "./components/Loader";
-
 // Route-level code splitting — each page loads its own JS chunk on demand
 const Home     = lazy(() => import("./pages/Home"));
 const About    = lazy(() => import("./pages/About"));
@@ -16,9 +14,10 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const DARK_BG = { background: "rgb(0,3,25)" };
 const SPECIAL_ROUTES = ["/projects", "/resume"];
 
+// Plain CSS spinner — never use the Three.js Loader outside a Canvas context
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-slate-50">
-    <Loader />
+    <div className="w-12 h-12 rounded-full border-[3px] border-slate-200 border-t-blue-500 animate-spin" />
   </div>
 );
 
