@@ -238,3 +238,31 @@ body:has(.card[data-color="green"]:hover) {
 .animate-fourth { animation: fourth 9s ease infinite; }
 .animate-fifth  { animation: fifth  14s ease infinite; }
 
+/* ── Bird click particle burst ── */
+@keyframes birdParticle {
+  0%   { opacity: 1; transform: translate(-50%,-50%) translate(0,0) scale(1.2) rotate(0deg); }
+  60%  { opacity: 0.8; }
+  100% { opacity: 0; transform: translate(-50%,-50%) translate(var(--dx),var(--dy)) scale(0.3) rotate(var(--dr)); }
+}
+.bird-particle {
+  position: fixed;
+  pointer-events: none;
+  font-size: 1.5rem;
+  line-height: 1;
+  animation: birdParticle 1.4s cubic-bezier(.25,.46,.45,.94) forwards;
+  z-index: 9999;
+  user-select: none;
+  will-change: transform, opacity;
+}
+
+/* Bird click hint tooltip */
+@keyframes hintFade {
+  0%  { opacity: 0; transform: translateY(4px); }
+  20% { opacity: 1; transform: translateY(0); }
+  80% { opacity: 1; }
+  100%{ opacity: 0; transform: translateY(-8px); }
+}
+.bird-hint {
+  animation: hintFade 2.5s ease forwards;
+}
+
