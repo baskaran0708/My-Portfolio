@@ -1,8 +1,8 @@
 <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
 <rect width="48" height="48" rx="8.88889" fill="white"/>
-<path d="M11.26 30H7.9L13.76 16.6H18.04L23.94 30H20.5L19.24 27.04H12.54L11.26 30ZM14.96 21.42L13.7 24.34H18.08L16.82 21.42L16 19.34H15.78L14.96 21.42ZM27.6398 30H24.6398V16.6H27.6398V21.92H34.6398V16.6H37.6398V30H34.6398V24.62H27.6398V30Z" fill="url(#paint0_linear_1545_39)"/>
+<path d="M6.5 30H9.7L10.78 27.2H16.62L17.7 30H21L15.4 16.6H12.02L6.5 30ZM13.7 20.1L15.62 24.8H11.78L13.7 20.1Z M22.5 16.6V30H29.5C32.8 30 35 28.2 35 25.4C35 23.6 34 22.3 32.5 21.7C33.6 21.1 34.3 20 34.3 18.7C34.3 17.2 33.2 16.6 31 16.6H22.5ZM25.5 19.2H30.2C31.1 19.2 31.5 19.6 31.5 20.4C31.5 21.2 31 21.7 30.1 21.7H25.5V19.2ZM25.5 24.1H30.4C31.5 24.1 32.1 24.6 32.1 25.6C32.1 26.6 31.4 27.4 30.3 27.4H25.5V24.1Z" fill="url(#grad_ba)"/>
 <defs>
-<linearGradient id="paint0_linear_1545_39" x1="8" y1="35.5" x2="38.0109" y2="10.5484" gradientUnits="userSpaceOnUse">
+<linearGradient id="grad_ba" x1="6" y1="35" x2="38" y2="11" gradientUnits="userSpaceOnUse">
 <stop stop-color="#989FFF"/>
 <stop offset="1" stop-color="#29A2FF"/>
 </linearGradient>

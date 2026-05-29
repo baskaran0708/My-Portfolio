@@ -4,24 +4,40 @@ import { socialLinks } from "../constants";
 
 const Footer = () => {
   return (
-    <footer className='footer font-poppins'>
-      <hr className='border-slate-200' />
+    <footer className="footer font-poppins">
+      <hr className="border-slate-200" />
 
-      <div className='footer-container'>
-        <p>
-          © 2023 <strong>Adrian Hajdin</strong>. All rights reserved.
+      <div className="footer-container">
+        <p className="text-sm text-center sm:text-left">
+          © 2025 <strong>Baskaran A</strong>. All rights reserved.
         </p>
 
-        <div className='flex gap-3 justify-center items-center'>
-          {socialLinks.map((link) => (
-            <Link key={link.name} to={link.link} target='_blank'>
+        <div className="flex gap-4 justify-center items-center flex-wrap">
+          {socialLinks.map((item) => {
+            const isExternal = item.link.startsWith("http");
+            const content = (
               <img
-                src={link.iconUrl}
-                alt={link.name}
-                className='w-6 h-6 object-contain'
+                src={item.iconUrl}
+                alt={item.name}
+                className="w-6 h-6 object-contain"
               />
-            </Link>
-          ))}
+            );
+            return isExternal ? (
+              <a
+                key={item.name}
+                href={item.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={item.name}
+              >
+                {content}
+              </a>
+            ) : (
+              <Link key={item.name} to={item.link} aria-label={item.name}>
+                {content}
+              </Link>
+            );
+          })}
         </div>
       </div>
     </footer>

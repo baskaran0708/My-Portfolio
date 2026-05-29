@@ -1,32 +1,58 @@
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { lazy, Suspense } from "react";
+import { Route, BrowserRouter as Router, Routes, useLocation } from "react-router-dom";
 
 import { Footer, Navbar } from "./components";
-import { About, Contact, Home, Projects } from "./pages";
+import ErrorBoundary from "./components/ErrorBoundary";
+import Loader from "./components/Loader";
 
-const App = () => {
+// Route-level code splitting — each page loads its own JS chunk on demand
+const Home     = lazy(() => import("./pages/Home"));
+const About    = lazy(() => import("./pages/About"));
+const Projects = lazy(() => import("./pages/Projects"));
+const Contact  = lazy(() => import("./pages/Contact"));
+const Resume   = lazy(() => import("./pages/Resume"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+
+const DARK_BG = { background: "rgb(0,3,25)" };
+const SPECIAL_ROUTES = ["/projects", "/resume"];
+
+const PageLoader = () => (
+  <div className="min-h-screen flex items-center justify-center bg-slate-50">
+    <Loader />
+  </div>
+);
+
+const AppLayout = () => {
+  const location = useLocation();
+  const isSpecial = SPECIAL_ROUTES.includes(location.pathname);
+
   return (
-    <main className='bg-slate-300/20'>
-      <Router>
-        <Navbar />
+    <main
+      className={isSpecial ? "min-h-screen" : "bg-slate-300/20"}
+      style={isSpecial ? DARK_BG : undefined}
+    >
+      {!isSpecial && <Navbar />}
+      <Suspense fallback={<PageLoader />}>
         <Routes>
-          <Route path='/' element={<Home />} />
-          <Route
-            path='/*'
-            element={
-              <>
-                <Routes>
-                  <Route path='/about' element={<About />} />
-                  <Route path='/projects' element={<Projects />} />
-                  <Route path='/contact' element={<Contact />} />
-                </Routes>
-                <Footer />
-              </>
-            }
-          />
+          <Route path="/"        element={<Home />} />
+          <Route path="/about"   element={<About />} />
+          <Route path="/projects" element={<Projects />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/resume"  element={<Resume />} />
+          <Route path="*"        element={<NotFound />} />
         </Routes>
-      </Router>
+      </Suspense>
+      {!isSpecial && <Footer />}
     </main>
   );
 };
+
+const App = () => (
+  <ErrorBoundary>
+    <Router>
+      <AppLayout />
+    </Router>
+  </ErrorBoundary>
+);
 
 export default App;
