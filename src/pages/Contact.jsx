@@ -85,11 +85,14 @@ const Contact = () => {
         svcId,
         tplId,
         {
-          from_name:  form.name,
-          to_name:    "Baskaran",
-          from_email: form.email,
-          to_email:   "baskaran030708@gmail.com",
-          message:    form.message,
+          // Variable names MUST match the template placeholders exactly:
+          // Template Subject  → "Contact Us: {{title}}"
+          // Template Content  → {{name}}, {{message}}
+          // Template Reply To → {{email}}
+          name:    form.name,
+          email:   form.email,
+          message: form.message,
+          title:   `New message from ${form.name}`,
         },
         pubKey
       )
