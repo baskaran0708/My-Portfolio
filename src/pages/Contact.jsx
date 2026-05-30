@@ -1,7 +1,7 @@
 import emailjs from "@emailjs/browser";
 import { Canvas } from "@react-three/fiber";
 import { Suspense, useRef, useState } from "react";
-import { FaEnvelope, FaPhone, FaLocationDot, FaGithub, FaLinkedin, FaPaperPlane, FaCircleCheck, FaUser, FaComment } from "react-icons/fa6";
+import { FaEnvelope, FaLocationDot, FaGithub, FaLinkedin, FaPaperPlane, FaCircleCheck, FaUser, FaComment } from "react-icons/fa6";
 
 import { Fox } from "../models";
 import useAlert from "../hooks/useAlert";
@@ -16,14 +16,6 @@ const INFO = [
     href: "mailto:baskaran030708@gmail.com",
     color: "#3b82f6",
     bg: "#eff6ff",
-  },
-  {
-    icon: FaPhone,
-    label: "Phone",
-    value: "+91 7305702113",
-    href: "tel:+917305702113",
-    color: "#10b981",
-    bg: "#f0fdf4",
   },
   {
     icon: FaLocationDot,
