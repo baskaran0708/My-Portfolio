@@ -4,15 +4,48 @@ import { useAnimations, useGLTF } from "@react-three/drei";
 
 import birdScene from "../assets/3d/bird.glb";
 
-const IS_MOBILE  = typeof window !== "undefined" && window.innerWidth < 768;
-const RX         = IS_MOBILE ? 1.4  : 3.2;   // horizontal orbit radius
-const RZ         = IS_MOBILE ? 0.6  : 0.9;   // depth radius (shallow → always in front)
-const CY         = IS_MOBILE ? 0.6  : 1.2;   // height — 39 % from viewport top at z=-2
-const CZ         = -1.8;                       // orbit centre z
-const BASE_SPEED  = 0.3;
-const BOOST_SPEED = 1.8;
+/* ── Design rationale ────────────────────────────────────────────────────────
+   Previous orbit was in the XZ plane (x and z vary).  At the BACK of the
+   orbit (z most negative) the bird:
+     1. went visually behind the island buildings
+     2. faced away from the camera (tail toward viewer = "backward flying")
+
+   Fix: orbit in the XY plane — x and y vary, Z is CONSTANT at -0.8 (always
+   clearly in front of the island at z=-43).  The bird sweeps left ↔ right and
+   bobs up ↔ down, always at the same screen depth.  Facing = left when
+   moving left, right when moving right.  Users always see the full side
+   profile — never the tail.
+
+   Entry animation: bird flies in from the bottom-left corner over 2.5 s,
+   arcing up to the orbit centre, then settles into the circle.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+const IS_MOBILE = typeof window !== "undefined" && window.innerWidth < 768;
+
+/* Orbit parameters */
+const CX = 0;                         // orbit centre x
+const CY = IS_MOBILE ? 0.9  : 1.4;   // orbit centre y  (mid-upper viewport)
+const CZ = -0.8;                      // CONSTANT z — always in front of island
+
+const RX = IS_MOBILE ? 1.0  : 2.2;   // horizontal sweep radius
+const RY = IS_MOBILE ? 0.25 : 0.45;  // vertical bob radius
+
+/* Entry parameters */
+const ENTRY_DUR = 2.4;                // seconds
+const ENTRY_X   = -10;               // off-screen left
+const ENTRY_Y   = -0.2;              // entry height
+
+/* Speed */
+const BASE_SPEED  = 0.32;
+const BOOST_SPEED = 1.9;
 const BOOST_MS    = 1500;
 const BASE_SCALE  = 0.003;
+
+/* Smooth-lerp a rotation angle through the shortest path */
+const lerpAngle = (from, to, t) => {
+  const diff = ((to - from + Math.PI) % (Math.PI * 2)) - Math.PI;
+  return from + diff * t;
+};
 
 export function Bird({ onBirdClick }) {
   const outerRef   = useRef();
@@ -21,8 +54,6 @@ export function Bird({ onBirdClick }) {
   const speedRef   = useRef(BASE_SPEED);
   const pulseRef   = useRef(0);
 
-  /* gl.domElement gives us the actual <canvas> so cursor changes work even
-     though the canvas element has a CSS cursor-grab class.             */
   const { gl } = useThree();
 
   const { scene, animations } = useGLTF(birdScene);
@@ -36,6 +67,10 @@ export function Bird({ onBirdClick }) {
 
   useEffect(() => () => clearTimeout(boostTimer.current), []);
 
+  const setCursor = useCallback((c) => {
+    if (gl?.domElement) gl.domElement.style.cursor = c;
+  }, [gl]);
+
   const handleClick = useCallback((e) => {
     e.stopPropagation();
     speedRef.current = BOOST_SPEED;
@@ -45,45 +80,71 @@ export function Bird({ onBirdClick }) {
     onBirdClick?.({ clientX: e.clientX, clientY: e.clientY });
   }, [onBirdClick]);
 
-  const setCursor = useCallback((cur) => {
-    if (gl?.domElement) gl.domElement.style.cursor = cur;
-  }, [gl]);
-
   useFrame(({ clock }) => {
     if (!outerRef.current || !modelRef.current) return;
-    const t     = clock.elapsedTime;
-    const angle = t * speedRef.current;
 
-    outerRef.current.position.x = RX * Math.cos(angle);
-    outerRef.current.position.z = CZ + RZ * Math.sin(angle);
-    outerRef.current.position.y = CY + Math.sin(t * 3.5) * 0.32;
+    const t = clock.elapsedTime;
 
-    // Tangent of the ellipse = direction of travel.
-    // Phoenix model front faces +Z at rotation.y=0, so no offset needed.
-    // +Math.PI was WRONG — it made the nose point opposite to travel direction.
-    const vx = -RX * Math.sin(angle);
-    const vz =  RZ * Math.cos(angle);
-    outerRef.current.rotation.y = Math.atan2(vx, vz);
+    if (t < ENTRY_DUR) {
+      /* ── Entry phase: fly in from bottom-left ── */
+      const progress = t / ENTRY_DUR;
+      // Ease-out cubic — fast start, gentle landing
+      const eased = 1 - Math.pow(1 - progress, 3);
+      // Arc upward during entry
+      const arcY   = Math.sin(progress * Math.PI) * 0.8;
 
-    if (pulseRef.current > 0) pulseRef.current = Math.max(0, pulseRef.current - 0.04);
-    modelRef.current.scale.setScalar(BASE_SCALE * (1 + pulseRef.current * 0.6));
+      outerRef.current.position.x = ENTRY_X + (CX - RX - ENTRY_X) * eased;
+      outerRef.current.position.y = ENTRY_Y + (CY   - ENTRY_Y) * eased + arcY;
+      outerRef.current.position.z = CZ;
+
+      // Face right (toward island) during entry
+      outerRef.current.rotation.y = Math.PI / 2;
+      outerRef.current.rotation.z = -0.15; // slight nose-up on approach
+
+    } else {
+      /* ── Orbit phase: XY-plane circle at constant Z ── */
+      const tOrbit = t - ENTRY_DUR;
+      // Start orbit at left (Math.PI offset) so it seamlessly continues entry
+      const angle  = tOrbit * speedRef.current + Math.PI;
+
+      outerRef.current.position.x = CX + RX * Math.cos(angle);
+      outerRef.current.position.y = CY + RY * Math.sin(angle);
+      outerRef.current.position.z = CZ; // never changes — always in front
+
+      // Horizontal velocity determines facing: left when vx<0, right when vx>0
+      const vx = -RX * Math.sin(angle);
+      const targetRot = vx < 0 ? -Math.PI / 2 : Math.PI / 2;
+      outerRef.current.rotation.y = lerpAngle(
+        outerRef.current.rotation.y, targetRot, 0.06
+      );
+
+      // Natural banking tilt — lean into turns
+      const bankTarget = Math.sin(angle) * 0.18;
+      outerRef.current.rotation.z = lerpAngle(
+        outerRef.current.rotation.z, bankTarget, 0.07
+      );
+    }
+
+    /* ── Scale pulse on click ── */
+    if (pulseRef.current > 0) pulseRef.current = Math.max(0, pulseRef.current - 0.035);
+    modelRef.current.scale.setScalar(BASE_SCALE * (1 + pulseRef.current * 0.65));
   });
 
   return (
     <group
       ref={outerRef}
+      position={[ENTRY_X, ENTRY_Y, CZ]}
       onClick={handleClick}
       onPointerEnter={() => setCursor("pointer")}
       onPointerLeave={() => setCursor("")}
     >
       {/*
-        ── Hit-sphere: MUST use transparent material, NOT visible={false}.
-           Three.js r157 Raycaster skips objects where visible===false.
-           A transparent opacity-0 mesh IS raycasted and gives a generous
-           click target (r=0.9) much larger than the tiny 0.003-scale model.
+        Hit-sphere: must NOT use visible={false} — Three.js r157 skips those
+        in raycasting.  transparent + opacity=0 mesh IS raycasted, giving a
+        generous r=1.0 click target regardless of animation frame.
       */}
-      <mesh renderOrder={-1}>
-        <sphereGeometry args={[0.9, 10, 10]} />
+      <mesh>
+        <sphereGeometry args={[1.0, 10, 10]} />
         <meshBasicMaterial transparent opacity={0} depthWrite={false} />
       </mesh>
 
