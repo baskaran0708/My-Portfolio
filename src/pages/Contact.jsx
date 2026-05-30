@@ -69,18 +69,16 @@ const Contact = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setLoading(true);
+    setCurrentAnimation("hit");
 
-    // Guard: catch missing Vercel environment variables early
+    // Read env vars — values are baked in at Vite build time
     const svcId  = import.meta.env.VITE_APP_EMAILJS_SERVICE_ID;
     const tplId  = import.meta.env.VITE_APP_EMAILJS_TEMPLATE_ID;
     const pubKey = import.meta.env.VITE_APP_EMAILJS_PUBLIC_KEY;
-    if (!svcId || !tplId || !pubKey) {
-      showAlert({ show: true, text: "Email service not configured — please contact me directly.", type: "danger" });
-      return;
-    }
-
-    setLoading(true);
-    setCurrentAnimation("hit");
+    console.log("[EmailJS] sending with svcId:", svcId ? "✓ set" : "✗ missing",
+                "tplId:", tplId ? "✓ set" : "✗ missing",
+                "pubKey:", pubKey ? "✓ set" : "✗ missing");
 
     emailjs
       .send(
