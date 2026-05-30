@@ -263,20 +263,6 @@ const Contact = () => {
               );
             })}
 
-            {/* Availability card */}
-            <div className="flex items-center gap-4 p-4 rounded-xl border border-green-100 bg-green-50 shadow-sm">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 bg-white">
-                <span className="w-3 h-3 rounded-full bg-green-400 animate-pulse" />
-              </div>
-              <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-green-600 mb-0.5">
-                  Status
-                </p>
-                <p className="text-sm font-semibold text-slate-700">
-                  Open to Senior Roles · Reply within 24h
-                </p>
-              </div>
-            </div>
           </div>
 
           {/* Fox 3D canvas */}
