@@ -56,20 +56,18 @@ const Navbar = () => {
           style={{ transform: open ? "translateY(-6.5px) rotate(-45deg)" : "none" }} />
       </button>
 
-      {/* ── Mobile full-screen overlay menu ── */}
+      {/* ── Mobile full-screen overlay menu (light theme — matches About/Contact) ── */}
       {open && (
-        <div
-          className="sm:hidden fixed inset-0 z-50 flex flex-col"
-          style={{ background: "rgba(0,3,25,0.97)", backdropFilter: "blur(24px)" }}
-        >
+        <div className="sm:hidden fixed inset-0 z-50 flex flex-col bg-white">
+
           {/* Top bar */}
-          <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-white/10">
+          <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-slate-100">
             <NavLink to="/" onClick={close}>
               <img src={logo} alt="logo" className="w-10 h-10 object-contain" />
             </NavLink>
             <button
               onClick={close}
-              className="w-9 h-9 flex items-center justify-center rounded-full border border-white/20 text-white/70 hover:text-white transition-colors text-lg"
+              className="w-9 h-9 flex items-center justify-center rounded-full border border-slate-200 text-slate-500 hover:text-slate-800 transition-colors text-base"
               aria-label="Close menu"
             >
               ✕
@@ -86,8 +84,8 @@ const Navbar = () => {
                 className={({ isActive }) =>
                   `flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-200 ${
                     isActive
-                      ? "bg-blue-600/20 border border-blue-500/30"
-                      : "border border-transparent hover:bg-white/[0.05]"
+                      ? "bg-blue-50 border border-blue-200"
+                      : "border border-transparent hover:bg-slate-50"
                   }`
                 }
               >
@@ -99,23 +97,24 @@ const Navbar = () => {
                       style={{
                         background: isActive
                           ? "linear-gradient(135deg,#CBACF9,#0072ff)"
-                          : "rgba(255,255,255,0.08)",
+                          : "#f1f5f9",
                       }}
                     >
-                      <Icon size={18} className={isActive ? "text-white" : "text-white/60"} />
+                      <Icon size={18} className={isActive ? "text-white" : "text-slate-500"} />
                     </div>
 
                     {/* Label + description */}
                     <div>
-                      <p className={`text-base font-semibold leading-none mb-0.5 ${isActive ? "text-white" : "text-white/90"}`}>
+                      <p className={`text-base font-semibold leading-none mb-0.5 ${
+                        isActive ? "text-blue-600" : "text-slate-800"
+                      }`}>
                         {label}
                       </p>
-                      <p className="text-xs text-white/40">{desc}</p>
+                      <p className="text-xs text-slate-400">{desc}</p>
                     </div>
 
-                    {/* Active arrow */}
                     {isActive && (
-                      <span className="ml-auto text-blue-400 text-lg">›</span>
+                      <span className="ml-auto text-blue-500 text-lg font-bold">›</span>
                     )}
                   </>
                 )}
@@ -124,7 +123,7 @@ const Navbar = () => {
           </nav>
 
           {/* Bottom: social links + brand */}
-          <div className="px-6 pb-8 pt-4 border-t border-white/10">
+          <div className="px-6 pb-8 pt-4 border-t border-slate-100">
             <div className="flex gap-3 mb-4">
               {SOCIALS.map(({ href, Icon, label }) => (
                 <a
@@ -132,14 +131,14 @@ const Navbar = () => {
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-white/10 text-white/60 hover:text-white hover:border-white/25 transition-all text-sm font-medium"
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-600 hover:text-blue-600 hover:border-blue-200 transition-all text-sm font-medium"
                 >
                   <Icon size={14} /> {label}
                 </a>
               ))}
             </div>
-            <p className="text-xs text-white/25 text-center">
-              Baskaran A · Backend Engineer & AI/ML Engineer
+            <p className="text-xs text-slate-400 text-center">
+              Baskaran A · Backend Engineer &amp; AI/ML Engineer
             </p>
           </div>
         </div>
