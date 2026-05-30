@@ -1,7 +1,7 @@
 import emailjs from "@emailjs/browser";
 import { Canvas } from "@react-three/fiber";
 import { Suspense, useRef, useState } from "react";
-import { FaEnvelope, FaPhone, FaLocationDot, FaGithub, FaLinkedin, FaPaperPlane, FaCircleCheck } from "react-icons/fa6";
+import { FaEnvelope, FaPhone, FaLocationDot, FaGithub, FaLinkedin, FaPaperPlane, FaCircleCheck, FaUser, FaComment } from "react-icons/fa6";
 
 import { Fox } from "../models";
 import useAlert from "../hooks/useAlert";
@@ -95,7 +95,8 @@ const Contact = () => {
         },
         pubKey
       )
-      .then(() => {
+      .then((res) => {
+        console.info("[EmailJS] sent OK — status:", res.status, res.text);
         setLoading(false);
         setSent(true);
         showAlert({ show: true, text: "Message sent! I'll reply soon 🚀", type: "success" });
@@ -108,9 +109,9 @@ const Contact = () => {
       })
       .catch((err) => {
         setLoading(false);
-        console.error("EmailJS error:", err);
+        console.error("[EmailJS] send failed — status:", err?.status, "| text:", err?.text, err);
         setCurrentAnimation("idle");
-        showAlert({ show: true, text: "Failed to send — try emailing me directly 😢", type: "danger" });
+        showAlert({ show: true, text: "Failed to send — email me directly at baskaran030708@gmail.com 😢", type: "danger" });
       });
   };
 
@@ -143,7 +144,7 @@ const Contact = () => {
             <h2 className="text-lg font-bold text-slate-800 mb-6">Send a Message</h2>
 
             <form ref={formRef} onSubmit={handleSubmit} className="flex flex-col gap-5">
-              <Field label="Your Name" icon={FaEnvelope} required>
+              <Field label="Your Name" icon={FaUser} required>
                 <input
                   type="text"
                   name="name"
@@ -171,7 +172,7 @@ const Contact = () => {
                 />
               </Field>
 
-              <Field label="Your Message" icon={FaEnvelope} required>
+              <Field label="Your Message" icon={FaComment} required>
                 <textarea
                   name="message"
                   rows={5}

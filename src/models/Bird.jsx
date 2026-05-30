@@ -1,31 +1,29 @@
 import { useCallback, useEffect, useRef } from "react";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import { useAnimations, useGLTF } from "@react-three/drei";
 
 import birdScene from "../assets/3d/bird.glb";
 
-/* ── Orbit math
-   Verified viewport bounds at the orbit's CLOSEST point (front, z ≈ -1):
-     desktop  (1.78:1, FOV 75°) → visible half-width ≈ 8.2 units → rx=3.5 = 43 % ✓
-     mobile   (0.56:1, portrait) → visible half-width ≈ 2.6 units → rx=1.5 = 58 % ✓
-   Previously rx=7.5 put the bird 196 % off-screen at orbit front. ── */
-const IS_MOBILE = typeof window !== "undefined" && window.innerWidth < 768;
-const RX = IS_MOBILE ? 1.5 : 3.5;   // horizontal radius
-const RZ = IS_MOBILE ? 0.8 : 1.0;   // depth radius (shallow = stays visible)
-const CY = IS_MOBILE ? 2.2 : 2.8;   // orbit centre height
-const CZ = -2.0;                      // orbit centre z (behind origin → always in front of island)
-
-const BASE_SPEED  = 0.3;   // rad / s
-const BOOST_SPEED = 1.8;   // rad / s on click
+const IS_MOBILE  = typeof window !== "undefined" && window.innerWidth < 768;
+const RX         = IS_MOBILE ? 1.4  : 3.2;   // horizontal orbit radius
+const RZ         = IS_MOBILE ? 0.6  : 0.9;   // depth radius (shallow → always in front)
+const CY         = IS_MOBILE ? 0.6  : 1.2;   // height — 39 % from viewport top at z=-2
+const CZ         = -1.8;                       // orbit centre z
+const BASE_SPEED  = 0.3;
+const BOOST_SPEED = 1.8;
 const BOOST_MS    = 1500;
 const BASE_SCALE  = 0.003;
 
 export function Bird({ onBirdClick }) {
-  const outerRef = useRef(); // controlled by useFrame (position + rotation)
-  const modelRef = useRef(); // animation root (scale pulse)
+  const outerRef   = useRef();
+  const modelRef   = useRef();
   const boostTimer = useRef(null);
   const speedRef   = useRef(BASE_SPEED);
-  const pulseRef   = useRef(0); // 0→1 pulse, decays in useFrame
+  const pulseRef   = useRef(0);
+
+  /* gl.domElement gives us the actual <canvas> so cursor changes work even
+     though the canvas element has a CSS cursor-grab class.             */
+  const { gl } = useThree();
 
   const { scene, animations } = useGLTF(birdScene);
   const { actions } = useAnimations(animations, modelRef);
@@ -40,57 +38,55 @@ export function Bird({ onBirdClick }) {
 
   const handleClick = useCallback((e) => {
     e.stopPropagation();
-
-    // Speed boost
     speedRef.current = BOOST_SPEED;
     pulseRef.current = 1;
     clearTimeout(boostTimer.current);
-    boostTimer.current = setTimeout(() => {
-      speedRef.current = BASE_SPEED;
-    }, BOOST_MS);
-
-    // Fix: R3F ThreeEvent exposes clientX/Y directly — NOT on nativeEvent
+    boostTimer.current = setTimeout(() => { speedRef.current = BASE_SPEED; }, BOOST_MS);
     onBirdClick?.({ clientX: e.clientX, clientY: e.clientY });
   }, [onBirdClick]);
+
+  const setCursor = useCallback((cur) => {
+    if (gl?.domElement) gl.domElement.style.cursor = cur;
+  }, [gl]);
 
   useFrame(({ clock }) => {
     if (!outerRef.current || !modelRef.current) return;
     const t     = clock.elapsedTime;
     const angle = t * speedRef.current;
 
-    /* ── Elliptical orbit ── */
     outerRef.current.position.x = RX * Math.cos(angle);
     outerRef.current.position.z = CZ + RZ * Math.sin(angle);
     outerRef.current.position.y = CY + Math.sin(t * 3.5) * 0.32;
 
-    /* ── Facing direction (tangent of ellipse) + Math.PI to face FORWARD
-          Without + Math.PI the model faces its tail toward movement. ── */
+    // Tangent of the ellipse = direction of travel.
+    // Phoenix model front faces +Z at rotation.y=0, so no offset needed.
+    // +Math.PI was WRONG — it made the nose point opposite to travel direction.
     const vx = -RX * Math.sin(angle);
     const vz =  RZ * Math.cos(angle);
-    outerRef.current.rotation.y = Math.atan2(vx, vz) + Math.PI;
+    outerRef.current.rotation.y = Math.atan2(vx, vz);
 
-    /* ── Scale pulse: 1 → 1.6 → 1 over ~0.4 s ── */
-    if (pulseRef.current > 0) {
-      pulseRef.current = Math.max(0, pulseRef.current - 0.04);
-    }
-    const s = BASE_SCALE * (1 + pulseRef.current * 0.6);
-    modelRef.current.scale.setScalar(s);
+    if (pulseRef.current > 0) pulseRef.current = Math.max(0, pulseRef.current - 0.04);
+    modelRef.current.scale.setScalar(BASE_SCALE * (1 + pulseRef.current * 0.6));
   });
 
   return (
     <group
       ref={outerRef}
       onClick={handleClick}
-      onPointerEnter={() => { document.body.style.cursor = "pointer"; }}
-      onPointerLeave={() => { document.body.style.cursor = "";        }}
+      onPointerEnter={() => setCursor("pointer")}
+      onPointerLeave={() => setCursor("")}
     >
-      {/* Invisible hit-sphere — much easier to click than the tiny model geometry */}
-      <mesh visible={false}>
-        <sphereGeometry args={[0.65, 8, 8]} />
-        <meshBasicMaterial />
+      {/*
+        ── Hit-sphere: MUST use transparent material, NOT visible={false}.
+           Three.js r157 Raycaster skips objects where visible===false.
+           A transparent opacity-0 mesh IS raycasted and gives a generous
+           click target (r=0.9) much larger than the tiny 0.003-scale model.
+      */}
+      <mesh renderOrder={-1}>
+        <sphereGeometry args={[0.9, 10, 10]} />
+        <meshBasicMaterial transparent opacity={0} depthWrite={false} />
       </mesh>
 
-      {/* Actual bird model */}
       <group ref={modelRef} scale={[BASE_SCALE, BASE_SCALE, BASE_SCALE]}>
         <primitive object={scene} />
       </group>
