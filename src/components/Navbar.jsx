@@ -3,15 +3,15 @@ import { NavLink } from "react-router-dom";
 
 import { logo } from "../assets/images";
 
+const NAV_LINKS = [
+  { to: "/about",    label: "About"    },
+  { to: "/projects", label: "Projects" },
+  { to: "/resume",   label: "Resume"   },
+  { to: "/contact",  label: "Contact"  },
+];
+
 const Navbar = () => {
   const [open, setOpen] = useState(false);
-
-  const links = [
-    { to: "/about",    label: "About"    },
-    { to: "/projects", label: "Projects" },
-    { to: "/resume",   label: "Resume"   },
-    { to: "/contact",  label: "Contact"  },
-  ];
 
   return (
     <header className="header relative">
@@ -21,7 +21,7 @@ const Navbar = () => {
 
       {/* Desktop nav */}
       <nav className="hidden sm:flex text-lg gap-7 font-medium">
-        {links.map(({ to, label }) => (
+        {NAV_LINKS.map(({ to, label }) => (
           <NavLink
             key={to}
             to={to}
@@ -55,7 +55,7 @@ const Navbar = () => {
       {/* Mobile dropdown */}
       {open && (
         <nav className="sm:hidden absolute top-full left-0 right-0 bg-white/95 backdrop-blur-sm shadow-lg flex flex-col items-center py-5 gap-5 font-medium z-50 border-t border-gray-100">
-          {links.map(({ to, label }) => (
+          {NAV_LINKS.map(({ to, label }) => (
             <NavLink
               key={to}
               to={to}

@@ -268,8 +268,7 @@ const Contact = () => {
 
           {/* Fox 3D canvas */}
           <div
-            className="w-full rounded-2xl overflow-hidden border border-slate-100 shadow-sm"
-            className="h-[200px] sm:h-[260px] lg:h-[280px]"
+            className="w-full h-[200px] sm:h-[260px] lg:h-[280px] rounded-2xl overflow-hidden border border-slate-100 shadow-sm"
             style={{ background: "linear-gradient(135deg,#f8faff,#eef2ff)" }}
           >
             <Canvas camera={{ position: [0, 0, 5], fov: 75, near: 0.1, far: 1000 }}>

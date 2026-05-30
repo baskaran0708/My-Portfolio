@@ -20,11 +20,9 @@ const adjustIslandForScreenSize = () =>
 const [biplaneScale, biplanePosition] = adjustBiplaneForScreenSize();
 const [islandScale,  islandPosition]  = adjustIslandForScreenSize();
 
-/* ── Particle emoji pools — alternates heart / fire per click ── */
+/* ── Particle emoji pools (module-level constants — never mutated) ── */
 const HEART_EMOJIS = ["❤️","💕","💖","💗","💓","💞","🌸","💝"];
 const FIRE_EMOJIS  = ["🔥","✨","⚡","💥","🚀","🌟","💫","🎯"];
-let   _clickCount  = 0;
-let   _pid = 0; // particle ID counter
 
 /* ── Hint shown on first load ── */
 const ClickHint = () => (
@@ -53,9 +51,10 @@ const Particle = ({ x, y, emoji, dx, dy }) => (
 
 /* ── Home page ── */
 const Home = () => {
-  const audioRef      = useRef(null);
-  const pidRef        = useRef(0);
-  const hintShownRef  = useRef(false);
+  const audioRef        = useRef(null);
+  const pidRef          = useRef(0);     // particle ID — reset on remount (correct)
+  const clickCountRef   = useRef(0);     // alternates heart/fire per click
+  const particleTimers  = useRef([]);    // track cleanup timeouts
 
   const [currentStage,   setCurrentStage]   = useState(1);
   const [isRotating,     setIsRotating]     = useState(false);
@@ -72,8 +71,11 @@ const Home = () => {
     const t = setTimeout(() => setShowHint(false), 4000);
     return () => {
       clearTimeout(t);
-      audioRef.current.pause();
-      audioRef.current.src = "";
+      // Clear all pending particle-cleanup timers to prevent state updates on unmounted component
+      particleTimers.current.forEach(clearTimeout);
+      particleTimers.current = [];
+      audioRef.current?.pause();
+      audioRef.current && (audioRef.current.src = "");
       audioRef.current = null;
     };
   }, []);
@@ -94,8 +96,8 @@ const Home = () => {
   const handleBirdClick = useCallback(({ clientX, clientY }) => {
     setShowHint(false);
 
-    _clickCount++;
-    const pool = _clickCount % 2 === 0 ? FIRE_EMOJIS : HEART_EMOJIS;
+    clickCountRef.current++;
+    const pool = clickCountRef.current % 2 === 0 ? FIRE_EMOJIS : HEART_EMOJIS;
 
     const COUNT = 10;
     const burst = Array.from({ length: COUNT }, (_, i) => {
@@ -107,15 +109,19 @@ const Home = () => {
         x:     clientX,
         y:     clientY,
         dx:    Math.cos(angle) * dist,
-        dy:    Math.sin(angle) * dist - 50, // bias upward
+        dy:    Math.sin(angle) * dist - 50,
       };
     });
 
     setParticles(prev => [...prev.slice(-40), ...burst]);
+
+    // Track timeout so it can be cleared if component unmounts
     const ids = new Set(burst.map(p => p.id));
-    setTimeout(() => {
+    const tid = setTimeout(() => {
       setParticles(prev => prev.filter(p => !ids.has(p.id)));
+      particleTimers.current = particleTimers.current.filter(t => t !== tid);
     }, 1900);
+    particleTimers.current.push(tid);
   }, []);
 
   return (
