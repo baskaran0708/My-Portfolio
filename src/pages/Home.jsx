@@ -24,14 +24,6 @@ const [islandScale,  islandPosition]  = adjustIslandForScreenSize();
 const HEART_EMOJIS = ["❤️","💕","💖","💗","💓","💞","🌸","💝"];
 const FIRE_EMOJIS  = ["🔥","✨","⚡","💥","🚀","🌟","💫","🎯"];
 
-/* ── Hint shown on first load ── */
-const ClickHint = () => (
-  <div className="bird-hint absolute top-24 right-6 sm:right-16 pointer-events-none
-                  bg-black/60 text-white text-xs px-3 py-1.5 rounded-full backdrop-blur-sm
-                  flex items-center gap-1.5 z-20">
-    <span>🐦</span> Click the bird for ❤️ &amp; 🔥
-  </div>
-);
 
 /* ── Single floating particle ── */
 const Particle = ({ x, y, emoji, dx, dy }) => (
@@ -52,15 +44,14 @@ const Particle = ({ x, y, emoji, dx, dy }) => (
 /* ── Home page ── */
 const Home = () => {
   const audioRef        = useRef(null);
-  const pidRef          = useRef(0);     // particle ID — reset on remount (correct)
-  const clickCountRef   = useRef(0);     // alternates heart/fire per click
-  const particleTimers  = useRef([]);    // track cleanup timeouts
+  const pidRef          = useRef(0);
+  const clickCountRef   = useRef(0);
+  const particleTimers  = useRef([]);
 
   const [currentStage,   setCurrentStage]   = useState(1);
   const [isRotating,     setIsRotating]     = useState(false);
   const [isPlayingMusic, setIsPlayingMusic] = useState(false);
   const [particles,      setParticles]      = useState([]);
-  const [showHint,       setShowHint]       = useState(true);
 
   /* Audio setup */
   useEffect(() => {
@@ -68,9 +59,7 @@ const Home = () => {
     audioRef.current.volume = 0.4;
     audioRef.current.loop   = true;
     // Hide hint after 4 s
-    const t = setTimeout(() => setShowHint(false), 4000);
     return () => {
-      clearTimeout(t);
       // Clear all pending particle-cleanup timers to prevent state updates on unmounted component
       particleTimers.current.forEach(clearTimeout);
       particleTimers.current = [];
@@ -94,8 +83,6 @@ const Home = () => {
 
   /* Bird click → particle burst — alternates hearts ❤️ and fire 🔥 */
   const handleBirdClick = useCallback(({ clientX, clientY }) => {
-    setShowHint(false);
-
     clickCountRef.current++;
     const pool = clickCountRef.current % 2 === 0 ? FIRE_EMOJIS : HEART_EMOJIS;
 
@@ -130,9 +117,6 @@ const Home = () => {
       <div className="absolute top-28 left-0 right-0 z-10 flex items-center justify-center">
         {currentStage && <HomeInfo currentStage={currentStage} />}
       </div>
-
-      {/* Click hint — fades out after 4 s or on first click */}
-      {showHint && <ClickHint />}
 
       {/* 3D Canvas */}
       <Canvas
