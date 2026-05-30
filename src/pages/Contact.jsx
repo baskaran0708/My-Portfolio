@@ -91,8 +91,8 @@ const Contact = () => {
           // Template Reply To → {{email}}
           name:    form.name,
           email:   form.email,
-          message: form.message,
-          title:   `New message from ${form.name}`,
+          message: `From: ${form.email}\n\n${form.message}`,
+          title:   `Portfolio message from ${form.name}`,
         },
         pubKey
       )
