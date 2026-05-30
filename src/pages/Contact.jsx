@@ -137,7 +137,7 @@ const Contact = () => {
       </div>
 
       {/* ── Two-column layout ── */}
-      <div className="flex flex-col lg:flex-row gap-10 xl:gap-14 items-start">
+      <div className="flex flex-col md:flex-row gap-8 lg:gap-14 items-start">
 
         {/* ── LEFT: Form card ── */}
         <div className="w-full lg:flex-1">
@@ -235,7 +235,7 @@ const Contact = () => {
         </div>
 
         {/* ── RIGHT: Info cards + Fox ── */}
-        <div className="w-full lg:w-[42%] flex flex-col gap-5">
+        <div className="w-full md:w-[42%] flex flex-col gap-5">
 
           {/* Info cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 gap-3">

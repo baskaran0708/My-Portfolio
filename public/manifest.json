@@ -1,0 +1,17 @@
+{
+  "name": "Baskaran A | Portfolio",
+  "short_name": "Baskaran A",
+  "description": "Backend Software Engineer & AI/ML Engineer — C++, PACS, HL7, PyTorch, React",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#000319",
+  "background_color": "#000319",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

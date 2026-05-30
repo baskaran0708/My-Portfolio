@@ -2,59 +2,125 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" href="/src/assets/favicon.ico" type="image/x-icon" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Primary SEO -->
-    <title>Baskaran A | C++ Backend & AI/ML Engineer — Chennai</title>
-    <meta name="description" content="Baskaran A — Backend Software Engineer & AI/ML Engineer specialising in C++ PACS/DICOM medical imaging, distributed HL7/FHIR pipelines (Kafka, gRPC), and production ONNX inference. Open to senior engineering roles." />
-    <meta name="keywords" content="Baskaran A, C++ engineer, PACS, DICOM, HL7, FHIR, Kafka, gRPC, AI/ML Engineer, React, PyTorch, ONNX, Medical Imaging, Full Stack, Chennai, India, Backend Software Engineer" />
-    <meta name="author" content="Baskaran A" />
-    <meta name="robots" content="index, follow" />
+    <!-- ── Favicon (SVG — works in all modern browsers) ── -->
+    <link rel="icon"             href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <link rel="manifest"         href="/manifest.json" />
+    <meta name="theme-color"     content="#000319" />
+    <meta name="msapplication-TileColor" content="#000319" />
 
-    <!-- Canonical (root-relative so it works on any domain) -->
+    <!-- ── Primary SEO ── -->
+    <title>Baskaran A | Backend Software Engineer &amp; AI/ML Engineer — Chennai</title>
+    <meta name="description" content="Baskaran A — Backend Software Engineer &amp; AI/ML Engineer from Chennai, India. Specialises in C++ PACS/DICOM medical imaging, distributed HL7 healthcare pipelines (Kafka, gRPC, RabbitMQ), PyTorch/ONNX production inference, and full-stack React + Spring Boot apps. Open to senior engineering roles." />
+    <meta name="keywords"     content="Baskaran A, Baskaran Arumugam, portfolio, C++ engineer Chennai, PACS developer, DICOM developer, HL7 engineer, AI ML engineer India, PyTorch ONNX developer, Backend Software Engineer Chennai, medical imaging engineer, full stack developer India, React Spring Boot developer" />
+    <meta name="author"       content="Baskaran A" />
+    <meta name="robots"       content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot"    content="index, follow" />
+    <meta name="language"     content="English" />
+    <meta name="revisit-after" content="7 days" />
+
+    <!-- ── Canonical ── -->
     <link rel="canonical" href="https://my-portfolio-ten-murex-87.vercel.app/" />
 
-    <!-- Open Graph -->
-    <meta property="og:type"        content="website" />
-    <meta property="og:url"         content="https://my-portfolio-ten-murex-87.vercel.app/" />
-    <meta property="og:title"       content="Baskaran A | C++ Backend & AI/ML Engineer" />
-    <meta property="og:description" content="Building C++ PACS medical imaging systems, distributed HL7 pipelines, and production ML inference services. Open to senior engineering roles." />
-    <meta property="og:image"       content="/og-preview.svg" />
+    <!-- ── Performance hints ── -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="https://api.emailjs.com" />
+
+    <!-- ── Open Graph (LinkedIn / Facebook sharing) ── -->
+    <meta property="og:type"         content="website" />
+    <meta property="og:url"          content="https://my-portfolio-ten-murex-87.vercel.app/" />
+    <meta property="og:site_name"    content="Baskaran A — Portfolio" />
+    <meta property="og:title"        content="Baskaran A | Backend Software Engineer &amp; AI/ML Engineer" />
+    <meta property="og:description"  content="Building C++ PACS medical imaging systems, distributed HL7 healthcare pipelines, and production ML inference services. MCA 9.3 CGPA. Open to senior engineering roles." />
+    <meta property="og:image"        content="https://my-portfolio-ten-murex-87.vercel.app/og-preview.svg" />
     <meta property="og:image:width"  content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt"    content="Baskaran A — Backend Software Engineer & AI/ML Engineer portfolio" />
+    <meta property="og:locale"       content="en_US" />
 
-    <!-- Twitter / X -->
+    <!-- ── Twitter / X Card ── -->
     <meta name="twitter:card"        content="summary_large_image" />
-    <meta name="twitter:title"       content="Baskaran A | C++ Backend & AI/ML Engineer" />
-    <meta name="twitter:description" content="C++ PACS systems · HL7 pipelines · PyTorch/ONNX inference · Full Stack. Chennai, India." />
-    <meta name="twitter:image"       content="/og-preview.svg" />
+    <meta name="twitter:site"        content="@baskaran0708" />
+    <meta name="twitter:creator"     content="@baskaran0708" />
+    <meta name="twitter:title"       content="Baskaran A | Backend Engineer &amp; AI/ML Engineer" />
+    <meta name="twitter:description" content="C++ PACS systems · HL7 pipelines · PyTorch/ONNX inference · Full Stack React. Chennai, India." />
+    <meta name="twitter:image"       content="https://my-portfolio-ten-murex-87.vercel.app/og-preview.svg" />
 
-    <!-- JSON-LD Person schema for Google rich results -->
+    <!-- ── JSON-LD: Person schema ── -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "Person",
+      "@id": "https://my-portfolio-ten-murex-87.vercel.app/#person",
       "name": "Baskaran A",
+      "alternateName": "Baskaran Arumugam",
       "jobTitle": "Backend Software Engineer & AI/ML Engineer",
-      "description": "Backend Software Engineer specialising in C++ medical imaging (PACS/DICOM), distributed HL7 healthcare pipelines, and production PyTorch/ONNX inference services.",
+      "description": "Backend Software Engineer specialising in C++ medical imaging (PACS/DICOM), distributed HL7 healthcare data pipelines, and production PyTorch/ONNX inference services. Currently at Live Medica Intelligence, Chennai.",
       "url": "https://my-portfolio-ten-murex-87.vercel.app/",
       "email": "baskaran030708@gmail.com",
       "telephone": "+91-7305702113",
+      "image": "https://my-portfolio-ten-murex-87.vercel.app/og-preview.svg",
       "address": {
         "@type": "PostalAddress",
         "addressLocality": "Chennai",
         "addressRegion": "Tamil Nadu",
         "addressCountry": "IN"
       },
+      "worksFor": {
+        "@type": "Organization",
+        "name": "Live Medica Intelligence"
+      },
+      "alumniOf": {
+        "@type": "CollegeOrUniversity",
+        "name": "Dr. M.G.R. Educational & Research Institute",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Chennai",
+          "addressCountry": "IN"
+        }
+      },
       "sameAs": [
         "https://github.com/baskaran0708",
         "https://www.linkedin.com/in/baskaran-a-b6757625a/"
       ],
       "knowsAbout": [
-        "C++17/20", "DCMTK", "ITK", "DICOM", "HL7 v2.x", "PACS",
-        "Kafka", "RabbitMQ", "gRPC", "PyTorch", "ONNX Runtime",
-        "React", "Spring Boot", "Docker", "Kubernetes", "AWS EC2"
+        "C++17/20", "DCMTK", "ITK", "Intel IPP", "DICOM", "HL7 v2.x", "PACS",
+        "Kafka", "RabbitMQ", "gRPC", "PyTorch", "TensorFlow", "ONNX Runtime",
+        "React", "Spring Boot", "FastAPI", "Docker", "Kubernetes", "AWS EC2",
+        "Medical Imaging", "AI/ML Engineering", "Backend Development"
+      ]
+    }
+    </script>
+
+    <!-- ── JSON-LD: WebSite schema (enables Google Sitelinks search) ── -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "@id": "https://my-portfolio-ten-murex-87.vercel.app/#website",
+      "name": "Baskaran A — Portfolio",
+      "url": "https://my-portfolio-ten-murex-87.vercel.app/",
+      "description": "Portfolio of Baskaran A — Backend Software Engineer & AI/ML Engineer from Chennai, India",
+      "author": {
+        "@id": "https://my-portfolio-ten-murex-87.vercel.app/#person"
+      }
+    }
+    </script>
+
+    <!-- ── JSON-LD: BreadcrumbList (helps Google understand site structure) ── -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home",     "item": "https://my-portfolio-ten-murex-87.vercel.app/" },
+        { "@type": "ListItem", "position": 2, "name": "About",    "item": "https://my-portfolio-ten-murex-87.vercel.app/about" },
+        { "@type": "ListItem", "position": 3, "name": "Projects", "item": "https://my-portfolio-ten-murex-87.vercel.app/projects" },
+        { "@type": "ListItem", "position": 4, "name": "Resume",   "item": "https://my-portfolio-ten-murex-87.vercel.app/resume" },
+        { "@type": "ListItem", "position": 5, "name": "Contact",  "item": "https://my-portfolio-ten-murex-87.vercel.app/contact" }
       ]
     }
     </script>
